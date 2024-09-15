@@ -7,15 +7,8 @@ browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
 </script>
 
 <template>
-  <main>
+  <main class="p-4">
     <p>url: {{ currentUrl }}</p>
     <!-- <p>params: {{ params }}</p> -->
   </main>
 </template>
-
-<style scoped>
-main {
-  padding: 20px;
-  font-size: 16px;
-}
-</style>
