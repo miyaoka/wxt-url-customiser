@@ -1,0 +1,8 @@
+{
+  "name": {
+    "message": "URL Simplifier"
+  },
+  "desc": {
+    "message": "Displays URL query parameters and lets you remove unnecessary ones."
+  }
+}
