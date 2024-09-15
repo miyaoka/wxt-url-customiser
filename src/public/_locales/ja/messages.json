@@ -1,8 +1,8 @@
 {
   "name": {
-    "message": "URLすっきりツール"
+    "message": "URL params エディター"
   },
   "desc": {
-    "message": "URLのクエリパラメータを表示し、不要なものを選択して削除します"
+    "message": "URLのクエリパラメータを編集します"
   }
 }
