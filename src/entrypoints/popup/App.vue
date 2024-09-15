@@ -29,8 +29,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="p-4">
-    params
-    <UrlEditor v-if="url" :href="url.href" />
+  <main class="w-fit h-fit">
+    <UrlEditor v-if="url" :url="url" />
   </main>
 </template>

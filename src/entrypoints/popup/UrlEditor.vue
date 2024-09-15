@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  href: string;
+  url: URL;
 }>();
 
 interface Param {
@@ -11,15 +11,9 @@ interface Param {
 
 const editParams = ref<Param[]>([]);
 const lockedKeyMap = ref<Record<string, boolean>>({});
-const newParam = ref<Param>(createNewParam());
-const new2Param = ref<Param>(createNewParam());
-
-const url = computed(() => {
-  return new URL(props.href);
-});
 
 const editedUrl = computed(() => {
-  const newUrl = new URL(props.href);
+  const newUrl = new URL(props.url.href);
   // paramsからsearchを作成
   const searchParams = new URLSearchParams();
   editParams.value.forEach((param) => {
@@ -37,12 +31,15 @@ const editedUrl = computed(() => {
 function init(url: URL) {
   const searchParams = url.searchParams;
   const entries = searchParams.entries();
-  const result: Param[] = [];
+  const params: Param[] = [];
   for (const [key, value] of entries) {
     const id = crypto.randomUUID();
-    result.push({ id, key, value });
+    params.push({ id, key, value });
   }
-  editParams.value = result;
+  // 新規エントリを追加するための入力欄
+  params.push(createNewParam());
+
+  editParams.value = params;
 
   // lockMapの初期化
   lockedKeyMap.value = {};
@@ -52,43 +49,42 @@ function toggleLock(key: string) {
   lockedKeyMap.value[key] = !lockedKeyMap.value[key];
 }
 
-function removeKey(key: string) {
-  editParams.value = editParams.value.filter((param) => param.key !== key);
+function removeKey(id: string) {
+  editParams.value = editParams.value.filter((param) => param.id !== id);
 }
 function createNewParam() {
   return { id: crypto.randomUUID(), key: "", value: "" };
 }
-function updateNewEntry() {
-  // keyとvalueが入力されていない場合は何もしない
-  if (!newParam.value.key || !newParam.value.value) {
-    return;
-  }
+function onUpdate() {
+  console.log("onUpdate");
+  const lastParam = editParams.value.at(-1);
+  if (!lastParam) return;
 
-  // paramsに新しいエントリを追加
-  editParams.value.push({
-    ...newParam.value,
-    id: crypto.randomUUID(),
-  });
-  // 入力欄をクリア
-  newParam.value = {
-    id: new2Param.value.id,
-    key: "",
-    value: "",
-  };
-  new2Param.value = createNewParam();
+  console.log("lastParam", lastParam);
+  // 最後のエントリが空でない場合は新しいエントリを追加
+  if (lastParam.key || lastParam.value) {
+    editParams.value.push(createNewParam());
+  }
 }
 
 function reset() {
-  init(url.value);
+  init(props.url);
 }
 function removeAll() {
-  editParams.value = editParams.value.filter((param) => {
+  // ロックされているエントリを残す
+  const filteredParams = editParams.value.filter((param) => {
     return lockedKeyMap.value[param.id];
   });
+  // 最後の要素を追加して更新
+  editParams.value = [...filteredParams, createNewParam()];
+}
+
+function copyUrl() {
+  navigator.clipboard.writeText(editedUrl.value.href);
 }
 
 watch(
-  url,
+  () => props.url,
   (url) => {
     init(url);
   },
@@ -99,95 +95,104 @@ watch(
 </script>
 
 <template>
-  <div class="p-10 text-sm min-w-[600px]">
-    <textarea :value="editedUrl.href" class="border p-2 w-full" rows="3" />
-    {{ lockedKeyMap }}
-    <div>
-      {{ editParams }}
-    </div>
+  <div class="flex flex-col p-4 text-sm gap-4">
+    <section>
+      <div class="flex flex-row justify-between items-center">
+        <h1 class="text-lg font-bold">URL</h1>
+        <!-- copy button -->
+        <button
+          class="bg-blue-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold"
+          @click="copyUrl"
+        >
+          <i class="i-mdi-content-copy w-5 h-5"></i>
+          copy
+        </button>
+      </div>
+      <textarea
+        :value="editedUrl.href"
+        class="border p-2 w-full"
+        rows="3"
+        readonly
+      />
+    </section>
+    <section>
+      <h2 class="text-lg font-bold">Pathes</h2>
+    </section>
 
-    <table class="table table-fixed border-separate border-spacing-1">
-      <tbody>
-        <tr v-for="({ id, key, value }, i) in editParams" :key="id">
-          <td>
-            <button class="flex bg-white p-2" @click="toggleLock(id)">
-              <i
-                :class="`${
-                  lockedKeyMap[id]
-                    ? 'i-mdi-lock bg-black'
-                    : 'i-mdi-lock-open bg-slate-300'
-                }  w-4 h-4`"
-              ></i>
-            </button>
-          </td>
-          <td>
-            {{ id }}
-          </td>
-          <td class="p-2">
-            <input
-              v-model="editParams[i].key"
-              class="border p-1"
-              :disabled="lockedKeyMap[key]"
-            />
-          </td>
-          <td class="p-2">
-            <input
-              v-model="editParams[i].value"
-              class="border p-1"
-              :disabled="lockedKeyMap[key]"
-            />
-          </td>
-          <td>
-            <button class="flex bg-white p-2" @click="removeKey(key)">
-              <i class="i-mdi-trash-can-outline bg-red-500 w-6 h-6"></i>
-            </button>
-          </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>{{ newParam.id }}</td>
-          <td class="p-2">
-            <input
-              v-model="newParam.key"
-              class="border p-1"
-              placeholder="new key"
-              @change="updateNewEntry"
-            />
-          </td>
-          <td class="p-2">
-            <input
-              v-model="newParam.value"
-              class="border p-1"
-              placeholder="new value"
-              @change="updateNewEntry"
-            />
-          </td>
-        </tr>
-        <tr v-if="newParam.key && newParam.value" :key="new2Param.id">
-          <td></td>
-          <td>{{ new2Param.id }}</td>
-          <td class="p-2">
-            <input class="border p-1" placeholder="new key" />
-          </td>
-          <td class="p-2">
-            <input class="border p-1" placeholder="new value" />
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <section>
+      <h2 class="text-lg font-bold">Params</h2>
 
-    <button
-      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      @click="removeAll"
+      <table class="mb-16">
+        <tbody>
+          <tr v-for="({ id, key, value }, i) in editParams" :key="id">
+            <td class="min-w-8">
+              <button
+                v-if="i !== editParams.length - 1"
+                class="flex bg-white p-1"
+                @click="removeKey(id)"
+              >
+                <i class="i-mdi-trash-can-outline bg-red-500 w-5 h-5"></i>
+              </button>
+            </td>
+
+            <td class="min-w-8">
+              <button
+                v-if="i !== editParams.length - 1"
+                class="flex bg-white p-1"
+                @click="toggleLock(id)"
+              >
+                <i
+                  :class="`${
+                    lockedKeyMap[id]
+                      ? 'i-mdi-lock bg-black'
+                      : 'i-mdi-lock-open bg-slate-300'
+                  }  w-5 h-5`"
+                ></i>
+              </button>
+            </td>
+
+            <td class="p-2">
+              <input
+                v-model="editParams[i].key"
+                class="border p-1"
+                :disabled="lockedKeyMap[key]"
+                placeholder="key"
+                @input="onUpdate"
+              />
+            </td>
+            <td class="p-2">
+              <input
+                v-model="editParams[i].value"
+                class="border p-1"
+                :disabled="lockedKeyMap[key]"
+                placeholder="value"
+                @input="onUpdate"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer
+      class="fixed inset-0 top-auto flex justify-center gap-2 p-2 bg-slate-200"
     >
-      remove All
-    </button>
-    <!-- reset -->
-    <button
-      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      @click="reset"
-    >
-      reset
-    </button>
+      <!-- remove all button -->
+      <button
+        class="bg-red-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold"
+        @click="removeAll"
+      >
+        <i class="i-mdi-trash-can-outline w-5 h-5"></i>
+        remove all params
+      </button>
+      <!-- reset button -->
+      <button
+        class="bg-blue-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold"
+        @click="reset"
+      >
+        <i class="i-mdi-reload w-5 h-5"></i>
+        reset
+      </button>
+    </footer>
   </div>
 </template>
