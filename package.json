@@ -12,7 +12,8 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "resize": "node ./scripts/resize.cjs"
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",
@@ -20,8 +21,10 @@
     "@wxt-dev/module-vue": "^1.0.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "sharp": "^0.33.5",
     "tailwindcss": "^3.4.11",
-    "typescript": "^5.5.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2",
     "vue-tsc": "^2.1.6",
     "wxt": "^0.19.1"
   },
