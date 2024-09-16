@@ -151,7 +151,7 @@ watch(
             @click="toggleEncode"
           >
             <i class="i-mdi-exchange w-5 h-5"></i>
-            {{ isEncoded ? "encoded" : "decoded" }}
+            {{ isEncoded ? "decode" : "encode" }}
           </button>
           <button
             class="bg-blue-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold active:bg-blue-600"
