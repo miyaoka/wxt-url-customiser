@@ -185,7 +185,7 @@ watch(
                   v-model="editPaths[i].value"
                   class="border p-1 w-full"
                   :disabled="lockedKeyMap[id]"
-                  placeholder="value"
+                  placeholder="path"
                   @input="onUpdatePath"
                 />
               </td>
