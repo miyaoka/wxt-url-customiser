@@ -257,7 +257,7 @@ watch(
     </section>
 
     <footer
-      class="fixed inset-0 top-auto flex justify-center gap-2 p-2 bg-slate-200"
+      class="fixed inset-0 top-auto flex justify-center gap-2 p-2 bg-slate-800"
     >
       <!-- remove all button -->
       <button
