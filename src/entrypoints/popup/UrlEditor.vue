@@ -16,6 +16,7 @@ interface PathItem {
 const editParams = ref<Param[]>([]);
 const editPaths = ref<PathItem[]>([]);
 const lockedKeyMap = ref<Record<string, boolean>>({});
+const isEncoded = ref(true);
 
 // 編集したparamsとpathsを結合して新しいURLを作成
 const editedUrl = computed(() => {
@@ -38,6 +39,12 @@ const editedUrl = computed(() => {
     .join("/");
 
   return newUrl;
+});
+
+const href = computed(() => {
+  return isEncoded.value
+    ? editedUrl.value.href
+    : decodeURI(editedUrl.value.href);
 });
 
 function init(url: URL) {
@@ -116,7 +123,11 @@ function removeAllParams() {
 }
 
 function copyUrl() {
-  navigator.clipboard.writeText(editedUrl.value.href);
+  navigator.clipboard.writeText(href.value);
+}
+
+function toggleEncode() {
+  isEncoded.value = !isEncoded.value;
 }
 
 watch(
@@ -135,21 +146,27 @@ watch(
     <section>
       <div class="flex flex-row justify-between items-center">
         <h1 class="text-lg font-bold">URL</h1>
-        <!-- copy button -->
-        <button
-          class="bg-blue-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold"
-          @click="copyUrl"
-        >
-          <i class="i-mdi-content-copy w-5 h-5"></i>
-          copy
-        </button>
+
+        <div class="flex flex-row items-center">
+          <!-- toggle encode -->
+          <button
+            class="py-2 px-2 rounded-md flex items-center gap-2 font-bold"
+            @click="toggleEncode"
+          >
+            <i class="i-mdi-exchange w-5 h-5"></i>
+            {{ isEncoded ? "encoded" : "decoded" }}
+          </button>
+          <!-- copy button -->
+          <button
+            class="bg-blue-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold"
+            @click="copyUrl"
+          >
+            <i class="i-mdi-content-copy w-5 h-5"></i>
+            copy
+          </button>
+        </div>
       </div>
-      <textarea
-        :value="editedUrl.href"
-        class="border p-2 w-full"
-        rows="3"
-        readonly
-      />
+      <textarea :value="href" class="border p-2 w-full" rows="3" readonly />
     </section>
     <section>
       <details>
