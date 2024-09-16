@@ -12,16 +12,15 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare",
-    "resize": "node ./scripts/resize.cjs"
+    "postinstall": "wxt prepare"
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",
     "@iconify-json/mdi": "^1.2.0",
+    "@wxt-dev/auto-icons": "^1.0.2",
     "@wxt-dev/module-vue": "^1.0.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
-    "sharp": "^0.33.5",
     "tailwindcss": "^3.4.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
