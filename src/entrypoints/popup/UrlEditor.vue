@@ -148,17 +148,15 @@ watch(
         <h1 class="text-lg font-bold">URL</h1>
 
         <div class="flex flex-row items-center">
-          <!-- toggle encode -->
           <button
-            class="py-2 px-2 rounded-md flex items-center gap-2 font-bold"
+            class="py-2 px-2 rounded-md flex items-center gap-2 active:bg-slate-300"
             @click="toggleEncode"
           >
             <i class="i-mdi-exchange w-5 h-5"></i>
             {{ isEncoded ? "encoded" : "decoded" }}
           </button>
-          <!-- copy button -->
           <button
-            class="bg-blue-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold"
+            class="bg-blue-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold active:bg-blue-600"
             @click="copyUrl"
           >
             <i class="i-mdi-content-copy w-5 h-5"></i>
@@ -261,7 +259,7 @@ watch(
     >
       <!-- remove all button -->
       <button
-        class="bg-red-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold"
+        class="bg-red-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold active:bg-red-600"
         @click="removeAllParams"
       >
         <i class="i-mdi-trash-can-outline w-5 h-5"></i>
@@ -269,7 +267,7 @@ watch(
       </button>
       <!-- reset button -->
       <button
-        class="bg-blue-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold"
+        class="bg-blue-500 text-white py-2 px-2 rounded-md flex items-center gap-2 font-bold active:bg-blue-600"
         @click="reset"
       >
         <i class="i-mdi-reload w-5 h-5"></i>
