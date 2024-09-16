@@ -1,8 +1,8 @@
 {
   "name": {
-    "message": "URL params エディター"
+    "message": "URL カスタマイザー"
   },
   "desc": {
-    "message": "URLのクエリパラメータを編集します"
+    "message": "URLのパスやクエリパラメータを編集します"
   }
 }

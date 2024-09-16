@@ -1,8 +1,8 @@
 {
   "name": {
-    "message": "URL params editor"
+    "message": "URL Customizer"
   },
   "desc": {
-    "message": "Edit URL query parameters."
+    "message": "Edit the URL's path and query parameters."
   }
 }
