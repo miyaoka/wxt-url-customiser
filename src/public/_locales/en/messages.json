@@ -3,6 +3,6 @@
     "message": "URL Customizer"
   },
   "desc": {
-    "message": "Edit the URL's path and query parameters."
+    "message": "Edit the path and parameters of the current page's URL."
   }
 }
