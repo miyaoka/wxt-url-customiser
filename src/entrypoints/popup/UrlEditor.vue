@@ -60,12 +60,10 @@ function init(url: URL) {
 
   editParams.value = params;
 
-  const paths = url.pathname
-    .split("/")
-    .slice(1)
-    .map((path) => {
-      return { id: crypto.randomUUID(), value: decodeURIComponent(path) };
-    });
+  const paths = url.pathname.split("/").flatMap((path) => {
+    if (path == "") return [];
+    return { id: crypto.randomUUID(), value: decodeURIComponent(path) };
+  });
 
   paths.push(createNewPath());
 
